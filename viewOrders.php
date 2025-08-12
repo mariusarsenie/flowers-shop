@@ -1,26 +1,26 @@
 <?php
-$dir = __DIR__ . '/updatecore';
+// viewOrders.php
 
-if (!is_dir($dir)) {
-    echo "Folderul 'updatecore' nu există.";
+$folder = __DIR__ . '/updatecore';
+
+if (!is_dir($folder)) {
+    echo "<p>Nu există comenzi.</p>";
     exit;
 }
 
-$files = array_diff(scandir($dir), ['.', '..']);
-if (empty($files)) {
-    echo "Nu există comenzi.";
+$files = glob($folder . '/order_*.json');
+if (!$files) {
+    echo "<p>Nu există comenzi.</p>";
     exit;
 }
 
 echo "<h1>Comenzi primite</h1>";
-echo "<table border='1' cellpadding='10' cellspacing='0'>";
-echo "<tr><th>Data / Ora</th><th>Nume client</th><th>Telefon</th><th>Adresă</th><th>Produse</th></tr>";
+echo "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse:collapse; width: 100%;'>";
+echo "<tr><th>Data</th><th>Nume</th><th>Telefon</th><th>Adresă</th><th>Produse</th></tr>";
 
 foreach ($files as $file) {
-    $path = $dir . '/' . $file;
-    $content = file_get_contents($path);
-    $order = json_decode($content, true);
-
+    $json = file_get_contents($file);
+    $order = json_decode($json, true);
     if (!$order) continue;
 
     echo "<tr>";
@@ -29,11 +29,11 @@ foreach ($files as $file) {
     echo "<td>" . htmlspecialchars($order['phone']) . "</td>";
     echo "<td>" . nl2br(htmlspecialchars($order['address'])) . "</td>";
 
-    echo "<td>";
+    echo "<td><ul>";
     foreach ($order['orderItems'] as $item) {
-        echo htmlspecialchars($item['name']) . " x " . intval($item['qty']) . "<br>";
+        echo "<li>" . htmlspecialchars($item['qty']) . " x " . htmlspecialchars($item['name']) . " @ " . htmlspecialchars($item['price']) . " RON</li>";
     }
-    echo "</td>";
+    echo "</ul></td>";
 
     echo "</tr>";
 }
