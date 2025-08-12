@@ -2,39 +2,71 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <title>Florărie - Comandă flori</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 30px; }
-    form { max-width: 400px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
-    input, select, textarea, button {
-      width: 100%; margin: 10px 0; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;
-    }
-    button {
-      background-color: #28a745; color: white; border: none; cursor: pointer;
-    }
-    button:hover {
-      background-color: #218838;
-    }
-  </style>
+  <title>Florărie - Catalog și Comandă</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<h1>Comandă flori online</h1>
+<h1>Catalog Flori</h1>
 
-<form id="orderForm" method="POST" action="saveOrder.php">
-  <input type="text" name="name" placeholder="Numele tău" required />
-  <input type="email" name="email" placeholder="Email-ul tău" required />
-  <input type="tel" name="phone" placeholder="Telefon" required />
-  <select name="flowerType" required>
-    <option value="">Alege tipul florii</option>
-    <option value="trandafir">Trandafir</option>
-    <option value="lalea">Lalea</option>
-    <option value="crin">Crin</option>
-    <option value="buchet mixt">Buchet mixt</option>
-  </select>
-  <textarea name="message" placeholder="Mesaj pentru comandă" required></textarea>
+<div id="catalog" class="catalog">
+  <!-- Produse mici -->
+  <div class="product-thumb" data-id="1">
+    <img src="https://via.placeholder.com/100?text=Trandafir" alt="Trandafir" />
+    <p>Trandafir</p>
+  </div>
+  <div class="product-thumb" data-id="2">
+    <img src="https://via.placeholder.com/100?text=Lalea" alt="Lalea" />
+    <p>Lalea</p>
+  </div>
+  <div class="product-thumb" data-id="3">
+    <img src="https://via.placeholder.com/100?text=Crin" alt="Crin" />
+    <p>Crin</p>
+  </div>
+  <div class="product-thumb" data-id="4">
+    <img src="https://via.placeholder.com/100?text=Buchet" alt="Buchet Mixt" />
+    <p>Buchet Mixt</p>
+  </div>
+</div>
+
+<!-- Zona produs mare -->
+<div id="product-detail" class="product-detail hidden">
+  <button id="close-detail">Închide</button>
+  <img id="detail-image" src="" alt="" />
+  <h2 id="detail-name"></h2>
+  <p id="detail-desc"></p>
+  <p><strong>Preț: </strong><span id="detail-price"></span> RON</p>
+  <button id="add-to-cart">Adaugă în coș</button>
+</div>
+
+<!-- Coș -->
+<h2>Coșul tău</h2>
+<div id="cart" class="cart">
+  <p>Coșul este gol.</p>
+</div>
+
+<!-- Formular comandă -->
+<h2>Plasează comanda</h2>
+<form id="order-form" method="POST" action="saveOrder.php">
+  <label>
+    Nume complet:<br />
+    <input type="text" name="customerName" required />
+  </label><br /><br />
+  <label>
+    Telefon:<br />
+    <input type="tel" name="phone" required />
+  </label><br /><br />
+  <label>
+    Adresă livrare:<br />
+    <textarea name="address" rows="3" required></textarea>
+  </label><br /><br />
+
+  <!-- Coșul ascuns pentru trimitere -->
+  <input type="hidden" name="orderData" id="orderData" />
+
   <button type="submit">Trimite comanda</button>
 </form>
 
+<script src="script.js"></script>
 </body>
 </html>
