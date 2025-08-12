@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Finalizare comandă</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; background: #fafafa; padding: 20px; border-radius: 10px; }
+    h1 { color: #2c3e50; margin-bottom: 15px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { padding: 8px 12px; border-bottom: 1px solid #ddd; }
+    th { background-color: #27ae60; color: white; }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+    button {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1.1em;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #219150;
+    }
+    .empty-cart {
+      text-align: center;
+      font-size: 1.2em;
+      color: #555;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Finalizare comandă</h1>
+
+<div id="cart-container"></div>
+
+<form id="order-form" style="display:none;">
+  <label for="name">Nume complet:</label>
+  <input type="text" id="name" name="name" required />
+
+  <label for="phone">Telefon:</label>
+  <input type="tel" id="phone" name="phone" required />
+
+  <label for="address">Adresă livrare:</label>
+  <textarea id="address" name="address" rows="3" required></textarea>
+
+  <button type="submit">Trimite comanda</button>
+</form>
+
+<div id="message"></div>
+
+<p><a href="index.html">← Înapoi la catalog</a></p>
+
+<script>
+  let cart = JSON.parse(localStorage.getItem('cart')) || {};
+  const cartContainer = document.getElementById('cart-container');
+  const form = document.getElementById('order-form');
+  const message = document.getElementById('message');
+
+  function renderCart() {
+    const keys = Object.keys(cart);
+    if (keys.length === 0) {
+      cartContainer.innerHTML = '<p class="empty-cart">Coșul este gol.</p>';
+      form.style.display = 'none';
+      return;
+    }
+
+    let html = `<table>
+      <tr><th>Produs</th><th>Cantitate</th><th>Preț/buc</th><th>Total</th></tr>`;
+
+    let totalPrice = 0;
+    keys.forEach(id => {
+      const item = cart[id];
+      const itemTotal = item.price * item.qty;
+      totalPrice += itemTotal;
+      html += `<tr>
+        <td>${item.name}</td>
+        <td>${item.qty}</td>
+        <td>${item.price} RON</td>
+        <td>${itemTotal} RON</td>
+      </tr>`;
+    });
+    html += `<tr>
+      <th colspan="3" style="text-align:right;">Total:</th>
+      <th>${totalPrice} RON</th>
+    </tr>`;
+    html += `</table>`;
+    cartContainer.innerHTML = html;
+    form.style.display = 'block';
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const name = form.name.value.trim();
+    const phone = form.phone.value.trim();
+    const address = form.address.value.trim();
+
+    if (!name || !phone || !address) {
+      alert('Completează toate câmpurile.');
+      return;
+    }
+
+    const orderData = {
+      name,
+      phone,
+      address,
+      items: cart
+    };
+
+    fetch('saveOrder.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(orderData)
+    })
+    .then(res => res.text())
+    .then(text => {
+      message.innerHTML = `<p style="color:green;">${text}</p>`;
+      localStorage.removeItem('cart');
+      form.style.display = 'none';
+      cartContainer.innerHTML = '';
+    })
+    .catch(err => {
+      message.innerHTML = `<p style="color:red;">Eroare la trimiterea comenzii. Încearcă din nou.</p>`;
+    });
+  });
+
+  renderCart();
+</script>
+
+</body>
+</html>
