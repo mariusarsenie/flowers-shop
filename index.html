@@ -2,294 +2,92 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <title>Florărie - Catalog și Comandă</title>
+  <title>Florărie - Catalog</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #fafafa; }
-    h1, h2 { color: #2c3e50; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #fafafa; }
+    h1 { color: #2c3e50; margin-bottom: 20px; }
     .catalog {
       display: flex;
-      gap: 15px;
       flex-wrap: wrap;
-      margin-bottom: 20px;
+      gap: 15px;
     }
-    .product-thumb {
-      border: 1px solid #ddd;
-      padding: 10px;
-      cursor: pointer;
-      width: 120px;
+    .product-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+      width: 180px;
+      padding: 15px;
       text-align: center;
-      background: white;
-      border-radius: 6px;
-      transition: box-shadow 0.3s;
+      transition: transform 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
     }
-    .product-thumb:hover {
-      box-shadow: 0 0 10px #aaa;
+    .product-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #888;
     }
-    .product-thumb img {
+    .product-card img {
       max-width: 100%;
-      height: auto;
-      border-radius: 4px;
-    }
-    .product-detail {
-      background: white;
-      padding: 15px;
+      height: 130px;
+      object-fit: cover;
       border-radius: 6px;
-      box-shadow: 0 0 8px #bbb;
-      margin-bottom: 20px;
-    }
-    .product-detail.hidden {
-      display: none;
-    }
-    #product-detail img {
-      max-width: 300px;
-      display: block;
-      margin-bottom: 10px;
-      border-radius: 6px;
-    }
-    #cart {
-      background: white;
-      padding: 15px;
-      border-radius: 6px;
-      box-shadow: 0 0 8px #bbb;
-      margin-bottom: 20px;
-      min-height: 50px;
-    }
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      align-items: center;
-    }
-    .cart-item button {
-      background: #e74c3c;
-      border: none;
-      color: white;
-      padding: 5px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    form label {
-      display: block;
       margin-bottom: 10px;
     }
-    input[type="text"], input[type="tel"], textarea {
-      width: 300px;
-      padding: 7px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
+    .product-name {
+      font-weight: bold;
+      margin-bottom: 5px;
     }
-    button[type="submit"] {
-      background: #27ae60;
-      color: white;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s;
-    }
-    button[type="submit"]:hover {
-      background: #219150;
-    }
-    #close-detail {
-      background: #ccc;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-      border-radius: 4px;
-      float: right;
-      margin-top: -10px;
-      margin-bottom: 10px;
+    .product-price {
+      color: #27ae60;
+      font-weight: bold;
+      font-size: 1.1em;
     }
   </style>
 </head>
 <body>
 
 <h1>Catalog Flori</h1>
-
-<div id="catalog" class="catalog">
-  <div class="product-thumb" data-id="1">
-    <img src="https://via.placeholder.com/100?text=Trandafir" alt="Trandafir" />
-    <p>Trandafir</p>
-  </div>
-  <div class="product-thumb" data-id="2">
-    <img src="https://via.placeholder.com/100?text=Lalea" alt="Lalea" />
-    <p>Lalea</p>
-  </div>
-  <div class="product-thumb" data-id="3">
-    <img src="https://via.placeholder.com/100?text=Crin" alt="Crin" />
-    <p>Crin</p>
-  </div>
-  <div class="product-thumb" data-id="4">
-    <img src="https://via.placeholder.com/100?text=Buchet" alt="Buchet Mixt" />
-    <p>Buchet Mixt</p>
-  </div>
-</div>
-
-<div id="product-detail" class="product-detail hidden">
-  <button id="close-detail">Închide</button>
-  <img id="detail-image" src="" alt="" />
-  <h2 id="detail-name"></h2>
-  <p id="detail-desc"></p>
-  <p><strong>Preț: </strong><span id="detail-price"></span> RON</p>
-  <button id="add-to-cart">Adaugă în coș</button>
-</div>
-
-<h2>Coșul tău</h2>
-<div id="cart">
-  <p>Coșul este gol.</p>
-</div>
-
-<h2>Plasează comanda</h2>
-<form id="order-form" method="POST" action="saveOrder.php">
-  <label>
-    Nume complet:<br />
-    <input type="text" name="customerName" required />
-  </label>
-  <label>
-    Telefon:<br />
-    <input type="tel" name="phone" required />
-  </label>
-  <label>
-    Adresă livrare:<br />
-    <textarea name="address" rows="3" required></textarea>
-  </label>
-
-  <input type="hidden" name="orderData" id="orderData" />
-
-  <button type="submit">Trimite comanda</button>
-</form>
+<div class="catalog" id="catalog"></div>
 
 <script>
   const products = {
     1: {
       name: "Trandafir",
-      desc: "Un trandafir roșu, simbol al iubirii și pasiunii.",
       price: 25,
-      img: "https://via.placeholder.com/400?text=Trandafir"
+      img: "https://via.placeholder.com/300x200?text=Trandafir"
     },
     2: {
       name: "Lalea",
-      desc: "Lalele elegante, perfecte pentru orice ocazie.",
       price: 20,
-      img: "https://via.placeholder.com/400?text=Lalea"
+      img: "https://via.placeholder.com/300x200?text=Lalea"
     },
     3: {
       name: "Crin",
-      desc: "Crini albi, simbol al purității și eleganței.",
       price: 30,
-      img: "https://via.placeholder.com/400?text=Crin"
+      img: "https://via.placeholder.com/300x200?text=Crin"
     },
     4: {
       name: "Buchet Mixt",
-      desc: "Un buchet colorat cu flori de sezon.",
       price: 45,
-      img: "https://via.placeholder.com/400?text=Buchet+Mixt"
+      img: "https://via.placeholder.com/300x200?text=Buchet+Mixt"
     }
   };
 
-  const catalog = document.getElementById("catalog");
-  const productDetail = document.getElementById("product-detail");
-  const detailImage = document.getElementById("detail-image");
-  const detailName = document.getElementById("detail-name");
-  const detailDesc = document.getElementById("detail-desc");
-  const detailPrice = document.getElementById("detail-price");
-  const addToCartBtn = document.getElementById("add-to-cart");
-  const closeDetailBtn = document.getElementById("close-detail");
-  const cart = document.getElementById("cart");
-  const orderForm = document.getElementById("order-form");
-  const orderDataInput = document.getElementById("orderData");
+  const catalogDiv = document.getElementById("catalog");
 
-  let currentProductId = null;
-  let cartItems = {};
+  Object.entries(products).forEach(([id, p]) => {
+    const a = document.createElement("a");
+    a.href = `product.html?id=${id}`;
+    a.className = "product-card";
 
-  catalog.addEventListener("click", (e) => {
-    const thumb = e.target.closest(".product-thumb");
-    if (!thumb) return;
+    a.innerHTML = `
+      <img src="${p.img}" alt="${p.name}" />
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">${p.price} RON</div>
+    `;
 
-    const id = thumb.getAttribute("data-id");
-    showProductDetail(id);
-  });
-
-  function showProductDetail(id) {
-    currentProductId = id;
-    const product = products[id];
-    detailImage.src = product.img;
-    detailImage.alt = product.name;
-    detailName.textContent = product.name;
-    detailDesc.textContent = product.desc;
-    detailPrice.textContent = product.price;
-    productDetail.classList.remove("hidden");
-    productDetail.scrollIntoView({ behavior: "smooth" });
-  }
-
-  closeDetailBtn.addEventListener("click", () => {
-    productDetail.classList.add("hidden");
-  });
-
-  addToCartBtn.addEventListener("click", () => {
-    if (!currentProductId) return;
-
-    if (cartItems[currentProductId]) {
-      cartItems[currentProductId].qty++;
-    } else {
-      cartItems[currentProductId] = {
-        ...products[currentProductId],
-        qty: 1,
-      };
-    }
-    renderCart();
-    alert(`${products[currentProductId].name} a fost adăugat în coș!`);
-  });
-
-  function renderCart() {
-    cart.innerHTML = "";
-    const items = Object.values(cartItems);
-    if (items.length === 0) {
-      cart.innerHTML = "<p>Coșul este gol.</p>";
-      return;
-    }
-
-    let total = 0;
-    items.forEach(item => {
-      total += item.price * item.qty;
-      const div = document.createElement("div");
-      div.className = "cart-item";
-      div.innerHTML = `
-        <span>${item.name} x ${item.qty} - ${item.price * item.qty} RON</span>
-        <button data-id="${item.name}">Șterge</button>
-      `;
-      cart.appendChild(div);
-
-      div.querySelector("button").addEventListener("click", () => {
-        // șterge produs după nume
-        for (const key in cartItems) {
-          if (cartItems[key].name === item.name) {
-            delete cartItems[key];
-            break;
-          }
-        }
-        renderCart();
-      });
-    });
-
-    const totalDiv = document.createElement("div");
-    totalDiv.style.fontWeight = "bold";
-    totalDiv.style.marginTop = "10px";
-    totalDiv.textContent = `Total: ${total} RON`;
-    cart.appendChild(totalDiv);
-  }
-
-  orderForm.addEventListener("submit", (e) => {
-    if (Object.keys(cartItems).length === 0) {
-      alert("Coșul este gol! Adaugă produse înainte de a comanda.");
-      e.preventDefault();
-      return;
-    }
-
-    orderDataInput.value = JSON.stringify(cartItems);
+    catalogDiv.appendChild(a);
   });
 </script>
 
