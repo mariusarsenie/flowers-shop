@@ -4,92 +4,82 @@
   <meta charset="UTF-8" />
   <title>Florărie - Catalog</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #fafafa; }
-    h1 { color: #2c3e50; margin-bottom: 20px; }
-    .catalog {
-      display: flex;
-      flex-wrap: wrap;
+    body { font-family: Arial, sans-serif; margin: 20px; background: #fffaf0; }
+    h1 { text-align: center; color: #2c3e50; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
       gap: 15px;
+      max-width: 900px;
+      margin: 20px auto;
     }
-    .product-card {
+    .card {
       background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #ccc;
-      width: 180px;
-      padding: 15px;
-      text-align: center;
-      transition: transform 0.2s;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
       cursor: pointer;
-      text-decoration: none;
-      color: inherit;
+      transition: transform 0.2s;
+      overflow: hidden;
+      text-align: center;
+      padding: 10px;
     }
-    .product-card:hover {
+    .card:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 15px #888;
     }
-    .product-card img {
+    .card img {
       max-width: 100%;
       height: 130px;
       object-fit: cover;
-      border-radius: 6px;
-      margin-bottom: 10px;
+      border-radius: 8px;
     }
-    .product-name {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .product-price {
+    .card h3 {
+      margin: 10px 0 5px;
+      font-size: 1.1em;
       color: #27ae60;
+    }
+    .card p {
+      font-size: 0.9em;
+      color: #555;
+      margin: 0 0 5px;
+      min-height: 40px;
+    }
+    .price {
       font-weight: bold;
+      color: #e67e22;
       font-size: 1.1em;
     }
   </style>
 </head>
 <body>
+  <h1>Catalog Flori</h1>
+  <div class="grid" id="products"></div>
 
-<h1>Catalog Flori</h1>
-<div class="catalog" id="catalog"></div>
+  <script>
+    const products = [
+      {id: 1, name: "Trandafiri Roșii", desc: "Buchet de 12 trandafiri roșii proaspeți.", price: 90, img: "https://i.imgur.com/MGJ6h8E.jpg"},
+      {id: 2, name: "Lalele Colorate", desc: "Buchet cu 15 lalele multicolore.", price: 75, img: "https://i.imgur.com/ku2pQbY.jpg"},
+      {id: 3, name: "Orhidee Albă", desc: "Plantă orhidee albă în ghiveci elegant.", price: 120, img: "https://i.imgur.com/6T9CVQD.jpg"},
+      {id: 4, name: "Buchet Mix", desc: "Mix de flori de sezon în nuanțe pastel.", price: 85, img: "https://i.imgur.com/ftNCKQE.jpg"},
+      {id: 5, name: "Crizanteme Galbene", desc: "Buchet crizanteme galbene vesele.", price: 70, img: "https://i.imgur.com/9dFglix.jpg"}
+    ];
 
-<script>
-  const products = {
-    1: {
-      name: "Trandafir",
-      price: 25,
-      img: "https://via.placeholder.com/300x200?text=Trandafir"
-    },
-    2: {
-      name: "Lalea",
-      price: 20,
-      img: "https://via.placeholder.com/300x200?text=Lalea"
-    },
-    3: {
-      name: "Crin",
-      price: 30,
-      img: "https://via.placeholder.com/300x200?text=Crin"
-    },
-    4: {
-      name: "Buchet Mixt",
-      price: 45,
-      img: "https://via.placeholder.com/300x200?text=Buchet+Mixt"
-    }
-  };
+    const grid = document.getElementById('products');
 
-  const catalogDiv = document.getElementById("catalog");
-
-  Object.entries(products).forEach(([id, p]) => {
-    const a = document.createElement("a");
-    a.href = `product.html?id=${id}`;
-    a.className = "product-card";
-
-    a.innerHTML = `
-      <img src="${p.img}" alt="${p.name}" />
-      <div class="product-name">${p.name}</div>
-      <div class="product-price">${p.price} RON</div>
-    `;
-
-    catalogDiv.appendChild(a);
-  });
-</script>
-
+    products.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${p.img}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <div class="price">${p.price} RON</div>
+      `;
+      card.addEventListener('click', () => {
+        // Deschide produsul în alt tab, trimitem id ca parametru
+        window.open(`product.html?id=${p.id}`, '_blank');
+      });
+      grid.appendChild(card);
+    });
+  </script>
 </body>
 </html>
