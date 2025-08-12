@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Florărie - Comandă flori</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 30px; }
+    form { max-width: 400px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
+    input, select, textarea, button {
+      width: 100%; margin: 10px 0; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;
+    }
+    button {
+      background-color: #28a745; color: white; border: none; cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Comandă flori online</h1>
+
+<form id="orderForm" method="POST" action="saveOrder.php">
+  <input type="text" name="name" placeholder="Numele tău" required />
+  <input type="email" name="email" placeholder="Email-ul tău" required />
+  <input type="tel" name="phone" placeholder="Telefon" required />
+  <select name="flowerType" required>
+    <option value="">Alege tipul florii</option>
+    <option value="trandafir">Trandafir</option>
+    <option value="lalea">Lalea</option>
+    <option value="crin">Crin</option>
+    <option value="buchet mixt">Buchet mixt</option>
+  </select>
+  <textarea name="message" placeholder="Mesaj pentru comandă" required></textarea>
+  <button type="submit">Trimite comanda</button>
+</form>
+
+</body>
+</html>
